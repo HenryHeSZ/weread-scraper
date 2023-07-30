@@ -61,7 +61,7 @@ const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
 const wasmInitPromise = new Promise<Response>((resolve, reject) => {
-  GM_xmlhttpRequest<ReadableStream<Uint8Array>>({
+  GM_xmlhttpRequest({
     method: "GET",
     url: __WASM_URL__,
     responseType: "stream",
