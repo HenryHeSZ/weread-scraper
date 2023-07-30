@@ -110,13 +110,19 @@ const preRenderContainerObserver = new MutationObserver(async () => {
   });
 });
 
-// session storage 用来存取是否正在进行内容抓取这一状态
+interface ChapterLevelList {
+  [k: string]: string;
+}
+
+// session storage 用来存取是否正在进行内容抓取这一状态和章节层级列表
 interface ScraperSessionState {
   scraping: boolean;
+  chapterLevelList: ChapterLevelList;
 }
 
 const scraperSessionInitialState: ScraperSessionState = {
   scraping: false,
+  chapterLevelList: {},
 };
 
 const scraperSessionStore = createStore<ScraperSessionState>()(
@@ -433,6 +439,18 @@ async function feed(preRenderContainer: Element, chapterTitle?: string) {
     preRenderContent.removeAttribute("id");
     // 添加章节内容 class 用于应用作用于章节的样式
     preRenderContent.classList.add("readerChapterContent");
+    // 添加章节标题 data-chapter-title 属性
+    // 和章节层级 data-chapter-level 属性
+    // 以便于后处理
+    const dataChapterTitle =
+      document
+        .querySelector("span.readerTopBar_title_chapter")
+        ?.textContent?.trim() || "";
+    preRenderContent.setAttribute("data-chapter-title", dataChapterTitle);
+    preRenderContent.setAttribute(
+      "data-chapter-level",
+      scraperSessionStore.getState().chapterLevelList[dataChapterTitle] || "1"
+    );
     // 添加章节标题元素（仅针对 txt 格式的书籍）
     typeof chapterTitle === "string" &&
       preRenderContent.insertAdjacentHTML(
@@ -441,10 +459,10 @@ async function feed(preRenderContainer: Element, chapterTitle?: string) {
       );
     // 将这个章节容器插入到 body 末尾
     await wasmInitPromise;
-    bodyElement.insertAdjacentHTML(
-      "beforeend",
-      decoder.decode(minify(encoder.encode(preRenderContent.outerHTML), {}))
+    preRenderContent.innerHTML = decoder.decode(
+      minify(encoder.encode(preRenderContent.innerHTML), {})
     );
+    bodyElement.insertAdjacentElement("beforeend", preRenderContent);
   }
   // 如果不是新章节，页面内容 minification 后插入到最后一个容器最后
   // TODO: 是否应该合并 <div data-wr-bd="1"> ?
@@ -461,14 +479,22 @@ async function feed(preRenderContainer: Element, chapterTitle?: string) {
 // 添加一个开启抓取的按钮
 GM_registerMenuCommand("Start Scraping", startScraping);
 function startScraping() {
-  scraperSessionStore.setState({ scraping: true });
+  scraperSessionStore.setState({
+    scraping: true,
+    chapterLevelList: Object.fromEntries(
+      [...document.querySelectorAll(".chapterItem_link")].map((e) => [
+        e.textContent?.trim() || "",
+        e.className.match(/(?<=chapterItem_level)\d+/)?.[0] || "1",
+      ])
+    ),
+  });
   window.location.reload();
 }
 
 // 添加一个取消抓取的按钮
 GM_registerMenuCommand("Cancel Scraping", cancelScraping);
 function cancelScraping() {
-  scraperSessionStore.setState({ scraping: false });
+  scraperSessionStore.setState({ scraping: false, chapterLevelList: {} });
   styleElement.innerHTML = "";
   bodyElement.innerHTML = "";
 }
@@ -478,6 +504,7 @@ GM_registerMenuCommand("Stop Scraping & Save", stopScrapingAndSave);
 async function stopScrapingAndSave() {
   scraperSessionStore.setState({
     scraping: false,
+    chapterLevelList: {},
   });
   saveContent(
     html`<!DOCTYPE html>` + htmlElement.outerHTML,
