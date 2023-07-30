@@ -280,7 +280,11 @@ function subscribePageContentLoaded() {
       // 页面加载完毕时，preRenderContainer 才是最终我们需要的结果
       const { preRenderContainer } = scraperPageStore.getState();
       if (preRenderContainer) {
-        await feed(preRenderContainer);
+        // 获取 txt 格式书籍的章节标题
+        const chapterTitle =
+          document.querySelector(".chapterTitle")?.textContent?.trim() ||
+          undefined;
+        await feed(preRenderContainer, chapterTitle);
       } else {
         console.warn("Failed to find .preRenderContainer element.");
       }
@@ -335,7 +339,7 @@ function getPageContentLoadedCleanUpFunction(unsub: () => void) {
 }
 
 // 将获取到的 preRenderContainer 中的内容稍作变换并存入目标位置
-async function feed(preRenderContainer: Element) {
+async function feed(preRenderContainer: Element, chapterTitle?: string) {
   // 样式处理，样式表只添加一次即可
   if (styleElement.childNodes.length === 0) {
     const preRenderStyleElement =
@@ -429,6 +433,12 @@ async function feed(preRenderContainer: Element) {
     preRenderContent.removeAttribute("id");
     // 添加章节内容 class 用于应用作用于章节的样式
     preRenderContent.classList.add("readerChapterContent");
+    // 添加章节标题元素（仅针对 txt 格式的书籍）
+    typeof chapterTitle === "string" &&
+      preRenderContent.insertAdjacentHTML(
+        "afterbegin",
+        html`<h1>${chapterTitle}</h1>`
+      );
     // 将这个章节容器插入到 body 末尾
     await wasmInitPromise;
     bodyElement.insertAdjacentHTML(
