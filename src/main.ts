@@ -5,9 +5,8 @@ import {
   GM_registerMenuCommand,
   GM_unregisterMenuCommand,
   GM_webRequest,
-  GM_xmlhttpRequest,
 } from "$";
-import GM_fetch from "@trim21/gm-fetch";
+import gmFetch from "@sec-ant/gm-fetch";
 import { createStore } from "zustand/vanilla";
 import {
   persist,
@@ -60,35 +59,7 @@ htmlElement.append(headElement, bodyElement);
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
-const wasmInitPromise = new Promise<Response>((resolve, reject) => {
-  GM_xmlhttpRequest({
-    method: "GET",
-    url: __WASM_URL__,
-    responseType: "stream",
-    onloadstart({ status, statusText, response }) {
-      if (status === 0) {
-        resolve(
-          new Response(response as ReadableStream<Uint8Array>, {
-            headers: {
-              "Content-Type": "application/wasm",
-            },
-          })
-        );
-        return;
-      }
-      reject(statusText);
-    },
-    onerror({ statusText }) {
-      reject(statusText);
-    },
-    onabort() {
-      reject("Request is aborted.");
-    },
-    ontimeout() {
-      reject("Request timeout.");
-    },
-  });
-}).then(init);
+const wasmInitPromise = gmFetch(__WASM_URL__).then(init);
 
 // 初始化一个 Mutation Observer 用来监测书籍页面内容 DOM 元素 preRenderContainer 的出现
 const preRenderContainerObserver = new MutationObserver(async () => {
@@ -378,7 +349,7 @@ async function feed(preRenderContainer: Element, chapterTitle?: string) {
       fetchImagePromises.push(
         (async () => {
           try {
-            const resp = await GM_fetch(url);
+            const resp = await gmFetch(url);
             if (resp.ok) {
               const imageBlob = await resp.blob();
               const imageDataUrl = await blobToBase64(imageBlob);
@@ -404,7 +375,7 @@ async function feed(preRenderContainer: Element, chapterTitle?: string) {
       fetchImagePromises.push(
         (async () => {
           try {
-            const resp = await GM_fetch(url);
+            const resp = await gmFetch(url);
             if (resp.ok) {
               const imageBlob = await resp.blob();
               const imageDataUrl = await blobToBase64(imageBlob);

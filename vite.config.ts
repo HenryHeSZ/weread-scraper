@@ -47,9 +47,9 @@ export default defineConfig({
             "zustandMiddleware",
             "umd/middleware.production.js"
           ),
-          "@trim21/gm-fetch": cdn.jsdelivrFastly(
-            "GM_fetch",
-            "dist/gm_fetch.min.js"
+          "@sec-ant/gm-fetch": cdn.jsdelivrFastly(
+            "gmFetch",
+            "dist/index.umd.js"
           ),
         },
       },
