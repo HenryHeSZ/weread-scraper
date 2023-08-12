@@ -8,6 +8,8 @@
 
 Export WeRead books as HTML files.
 
+**v2 is under development, discussions: https://github.com/Sec-ant/weread-scraper/pull/27**
+
 ## Usage
 
 1. Install [this script](https://greasyfork.org/scripts/450169@latest) in [Tampermonkey](https://tampermonkey.net/).

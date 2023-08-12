@@ -8,6 +8,8 @@
 
 将微信读书书籍内容导出为 HTML 文件
 
+**v2 正在开发中，关于 v2 的讨论请查看：https://github.com/Sec-ant/weread-scraper/pull/27**
+
 ## 使用方法
 
 1. 在 [Tampermonkey](https://www.tampermonkey.net/) 中安装[这个脚本](https://greasyfork.org/scripts/450169@latest)
