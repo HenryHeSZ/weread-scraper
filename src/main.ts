@@ -59,7 +59,12 @@ htmlElement.append(headElement, bodyElement);
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
-const wasmInitPromise = gmFetch(__WASM_URL__).then(init);
+// 不知道为什么但是 WebAssembly.instantiateStreaming 行不通了
+// 暂时改为 WebAssembly.instantiate
+// TODO: 调查原因
+const wasmInitPromise = gmFetch(__WASM_URL__)
+  .then((resp) => resp.arrayBuffer())
+  .then(init);
 
 // 初始化一个 Mutation Observer 用来监测书籍页面内容 DOM 元素 preRenderContainer 的出现
 const preRenderContainerObserver = new MutationObserver(async () => {
