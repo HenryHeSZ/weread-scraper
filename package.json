@@ -37,7 +37,7 @@
     "vite-plugin-monkey": "^3.5.0"
   },
   "dependencies": {
-    "@sec-ant/gm-fetch": "^1.0.1",
+    "@sec-ant/gm-fetch": "^1.1.0",
     "code-tag": "^1.1.0",
     "minify-html-wasm": "^0.1.1",
     "zustand": "^4.4.1"
