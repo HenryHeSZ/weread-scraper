@@ -81,7 +81,7 @@ npm run build
 
 11. **我也想参与开发、贡献代码，但是每次在微信读书页面打开浏览器开发者工具就会无限触发 `debugger` 断点，我该怎么办？**
 
-    你可以禁用浏览器的断点，但这样你就没办法根据自己的需要打断点调试了。更推荐你查看我的另外一个仓库 [anti-anti-debugging-debugger-firefox](https://github.com/Sec-ant/anti-anti-debugging-debugger-firefox)，这个仓库利用了 GitHub Actions 持续拉取最新版的火狐浏览器源码，将 `debugger` 关键字替换为另外的关键字，并自动编译和发布适用于 Windows 环境的火狐浏览器。使用这个浏览器调试时不会触发 `debugger` 断点，且可以自定义断点位置。
+    你可以禁用浏览器的断点，但这样你就没办法根据自己的需要打断点调试了。更推荐你查看我的另外一个仓库 [a2d2-firefox](https://github.com/Sec-ant/a2d2-firefox)，这个仓库利用了 GitHub Actions 持续拉取最新版的火狐浏览器源码，将 `debugger` 关键字替换为另外的关键字，并自动编译和发布适用于 Windows 环境的火狐浏览器。使用这个浏览器调试时不会触发 `debugger` 断点，且可以自定义断点位置。
 
 12. **这个仓库只有构建前的源代码，我在哪里可以下载到已经构建好的脚本文件？**
 
