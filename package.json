@@ -25,21 +25,21 @@
     "ncu": "ncu -u && npm i"
   },
   "devDependencies": {
-    "@types/node": "^20.4.5",
+    "@types/node": "^20.5.7",
     "@types/wicg-file-system-access": "^2020.9.6",
-    "@typescript-eslint/eslint-plugin": "^6.2.1",
-    "@typescript-eslint/parser": "^6.2.1",
-    "eslint": "^8.46.0",
-    "eslint-plugin-compat": "^4.1.4",
-    "npm-check-updates": "^16.10.17",
-    "typescript": "^5.1.6",
-    "vite": "^4.4.8",
-    "vite-plugin-monkey": "^3.4.0"
+    "@typescript-eslint/eslint-plugin": "^6.5.0",
+    "@typescript-eslint/parser": "^6.5.0",
+    "eslint": "^8.48.0",
+    "eslint-plugin-compat": "^4.2.0",
+    "npm-check-updates": "^16.13.2",
+    "typescript": "^5.2.2",
+    "vite": "^4.4.9",
+    "vite-plugin-monkey": "^3.5.0"
   },
   "dependencies": {
-    "@sec-ant/gm-fetch": "^0.0.6",
+    "@sec-ant/gm-fetch": "^1.0.0",
     "code-tag": "^1.1.0",
     "minify-html-wasm": "^0.1.1",
-    "zustand": "^4.4.0"
+    "zustand": "^4.4.1"
   }
 }
