@@ -49,7 +49,7 @@ export default defineConfig({
           ),
           "@sec-ant/gm-fetch": cdn.jsdelivrFastly(
             "gmFetch",
-            "dist/index.umd.js"
+            "dist/index.iife.js"
           ),
         },
       },
