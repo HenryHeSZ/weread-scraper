@@ -26,7 +26,9 @@ Export WeRead books as HTML files.
 
 7. Click **Set Click Interval** to set the automatic page turning time interval, in milliseconds (ms).
 
-8. Click **Inline Images** to set whether images are inlined in the document, that is, whether images can be loaded offline. Where ✔ indicates that the feature is enabled, and ✘ indicates that the feature is disabled.
+8. Click **Inline Images** to set whether images are inlined in the document, that is, whether images can be loaded offline. ✔ indicates that the feature is enabled, and ✘ indicates that the feature is disabled.
+
+9. Click **Display Annotations** to set whether to display book annotations. ✔ indicates that the feature is enabled, and ✘ indicates that the feature is disabled.
 
 ## Local Build
 
@@ -81,7 +83,7 @@ npm run build
 
 11. **I also want to participate in development and contribute code, but every time I open the browser developer tools on the WeRead page, I get stuck in an infinite `debugger` breakpoint loop. What should I do?**
 
-    You can disable breakpoints in your browser, but then you won't be able to debug by setting breakpoints where you need them. It is recommended that you check out my other repository [a2d2-firefox](https://github.com/Sec-ant/a2d2-firefox), which uses GitHub Actions to continuously pull the latest version of Firefox browser source code, replace the `debugger` keyword with another keyword, and automatically compile and release a Firefox browser for Windows environments. When debugging with this browser, `debugger` breakpoints will not be triggered and breakpoint locations can be customized.
+    You can disable breakpoints in your browser, but then you won't be able to debug by setting breakpoints where you need them. It is recommended that you check out my other repository [a2d2-firefox](https://github.com/Sec-ant/a2d2-firefox), which uses GitHub Actions to continuously pull the latest version of Firefox browser source code, replace the `debugger` keyword with another keyword, and automatically compile and release Firefox browsers for Windows/Linux/macOS platforms. When debugging with these browsers, `debugger` breakpoints will not be triggered and breakpoint locations can be customized.
 
 12. **This repository only has pre-built source code. Where can I download the built script file?**
 

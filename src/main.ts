@@ -47,6 +47,46 @@ const stylePreset = css`
   }
 `;
 
+const annotationStyle = css`
+  /* 携带注释信息的元素，下面的样式用来让它显示为一个黑色的圆 */
+  span.reader_footer_note {
+    text-indent: 0; /* 避免继承段落的缩进样式 */
+    text-align: left; /* 文字左对齐 */
+    position: relative; /* 用来给伪元素做定位参照 */
+    display: inline-block; /* 使宽度和高度指定有效 */
+    width: 1em; /* 设定宽度 */
+    height: 1em; /* 设定高度 */
+    background-color: black; /* 设定背景为黑色 */
+    border-radius: 50%; /* 圆角化为圆形 */
+    cursor: pointer; /* 光标样式改为手指 */
+  }
+  /* before 伪元素用来显示“注”这个字 */
+  span.reader_footer_note:before {
+    position: absolute; /* 绝对位置，基准为 span.reader_footer_note */
+    content: "注"; /* 显示“注”字 */
+    color: white; /* 字颜色为白色 */
+    left: 0.15em; /* 微调字的位置 */
+    top: 0.1em; /* 微调字的位置 */
+    font-size: 0.75em; /* 设定文字大小 */
+    font-family: "汉仪楷体"; /* 设定字体 */
+  }
+  /* after 伪元素用来显示注释内容，只在光标移至“注”上方时才显示 */
+  span.reader_footer_note:hover:after {
+    position: fixed; /* 相对于视窗的位置 */
+    content: attr(data-wr-footernote); /* 获取并设置注释内容 */
+    left: 0; /* 设定相对于视窗的位置 */
+    bottom: 0; /* 设定相对于视窗的位置 */
+    margin: 1em; /* 设定背景气泡与视窗边缘预留的空间 */
+    background: black; /* 设定背景气泡为黑色 */
+    border-radius: 0.25em; /* 背景气泡圆角 */
+    color: white; /* 设定文字为白色 */
+    padding: 0.5em; /* 设定文字内容与背景气泡边缘预留的空间 */
+    font-size: 1em; /* 设定文字大小 */
+    font-family: "汉仪楷体"; /* 设定字体 */
+    z-index: 1; /* 避免被其它元素遮挡 */
+  }
+`;
+
 // 初始化用来存储书籍内容的元素
 const htmlElement = document.createElement("html");
 const headElement = document.createElement("head");
@@ -135,6 +175,10 @@ const scraperGMInitialState: ScraperGMState = {
       name: "Inline Images",
       value: false,
     },
+    {
+      name: "Display Annotations",
+      value: false,
+    },
   ],
 };
 
@@ -143,6 +187,25 @@ const scraperGMStore = createStore<ScraperGMState>()(
     persist(() => scraperGMInitialState, {
       name: "scraper-gm-storage",
       storage: createJSONStorage(() => GMStorage),
+      merge: (persistedState, currentState) => {
+        return {
+          ...currentState,
+          ...(persistedState as ScraperGMState),
+          booleanOptions: currentState.booleanOptions.map(
+            (currentBooleanOption) => {
+              const persistedBooleanOption = (
+                persistedState as ScraperGMState
+              ).booleanOptions.find(
+                ({ name }) => name === currentBooleanOption.name
+              );
+              if (persistedBooleanOption) {
+                return persistedBooleanOption;
+              }
+              return currentBooleanOption;
+            }
+          ),
+        };
+      },
     })
   )
 );
@@ -323,6 +386,10 @@ async function feed(preRenderContainer: Element, chapterTitle?: string) {
       preRenderContainer.querySelector("style") || styleElement;
     // 添加预设样式和微信读书样式
     styleElement.append(stylePreset, preRenderStyleElement.innerHTML);
+    // 根据用户设置判断是否添加注释样式
+    if (scraperGMStore.getState().booleanOptions[1].value) {
+      styleElement.prepend(annotationStyle);
+    }
     // 对样式进行 minification
     await wasmInitPromise;
     styleElement.outerHTML = decoder.decode(
@@ -512,7 +579,7 @@ scraperGMStore.subscribe<BooleanOption[]>(
         if (typeof menuIds[i] !== "undefined") {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          GM_unregisterMenuCommand(menuIds[0]);
+          GM_unregisterMenuCommand(menuIds[i]);
         }
         menuIds[i] = GM_registerMenuCommand(
           `${booleanOptions[i].name} ${booleanOptions[i].value ? "✔" : "✘"}`,
